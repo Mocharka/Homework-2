@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head> 
+<title>Игра "Жизнь"</title>
+       <meta charset="UTF-8">
+</head>
+<body>
+
+<form name="board">
+            <input class="input" type="text" id="x" name="x"  placeholder="Ширина(клеточек)">
+            <br><br>
+            <input class="input" type="text" id="y" name="y"  placeholder="Высота(клеточек)">
+            <br><br>
+            <input type="button" id="but" value="Создать поле">
+			<br></br>
+			<input type="button" id="but1" value="Начать игру">
+			<input type="button" id="but2" value="Шаг">
+			<input type="button" id="but3" value="Пауза">
+			<input type="button" id="but4" value="Сбросить поле">
+			<br><br>
+			<input type="button" id="but5" value="Расставить клеточки случайно">
+</form>
+
+<style>
+#tbl {margin-left: 200px;
+margin-top: 50px ;
+};
+
+
+
+
+
+
+
+
+</style>
+<canvas id='tbl' ></canvas>
+
+
+
+
+
+
+
+<script> 
+var form = document.forms.board; 
+           var x1 = board.x; 
+            var y1 = board.y;
+
+let arr = [];
+let pause = 0;
+let t =0;
+let ret = 0;
+let drop = 0;
+let rand = 0;
+var canvas = document.getElementById('tbl');
+ctx = canvas.getContext('2d');
+
+ctx.beginPath();
+
+
+document.getElementById('but').onclick = function(e){  				// Создаем поле и пустой массив.
+                                     
+                canvas.style.border = "3px" ;    
+				canvas.style.border = "solid black" ; 
+				canvas.width = 500;
+				canvas.height = 500;
+				x = parseInt(x1.value) ;
+				y = parseInt(y1.value) ;
+				let xn = 500/x;
+				let yn = 500/y;
+				for (let i =0; i<= 500; i = i + xn){
+		ctx.moveTo(i, 0);
+		ctx.lineTo(i, 500);
+		}
+				for (let i =0; i<= 500; i = i + yn){
+		ctx.moveTo(0, i);
+		ctx.lineTo(500, i);
+		} 
+		ctx.stroke(); 
+	
+for ( i = 0; i < x; i++) {
+arr[i] = [];
+	for ( j = 0; j < y; j++) {
+	arr [i][j]=0;
+	};
+}
+};
+
+
+
+canvas.onclick = function (e) {										// Игрок расставлет клеточки.
+x2 = parseInt(x1.value) ;
+y2 = parseInt(y1.value) ;
+let x = e.offsetX;
+let y = e.offsetY;
+let n1 = 500/x2;
+let n2 = 500/y2;
+let d1 = x - x%n1;
+let d2 = y - y%n2;
+let c1 = Math.floor(d1/n1);
+let c2 = Math.floor(d2/n2);
+
+
+
+if (arr[c1][c2]!==1){
+ctx.fillRect(d1  , d2  , n1  , n2  );
+arr[c1][c2]=1;
+}
+else {
+ctx.clearRect(d1 , d2 , n1 , n2 );
+arr[c1][c2]=0;
+for (let i =0; i<= 500; i = i + n1){
+		ctx.moveTo(i, 0);
+		ctx.lineTo(i, 500);
+		}
+				for (let i =0; i<= 500; i = i + n2){
+		ctx.moveTo(0, i);
+		ctx.lineTo(500, i);
+		} 
+		ctx.stroke(); 
+}
+
+};
+
+function game() { 
+ret=0; 							// Функция самой игры.
+let c = 0;
+if (pause==1) return;
+else{
+var mas = [];
+for (let i = 0; i < x; i++) {
+mas[i]=[];
+
+	for (let j = 0; j < y; j++) {
+	
+	
+	 
+	if ( arr[i][a(j)-1] == 1) { c = c+1};
+	if ( arr[i][b(j)+1] == 1) { c = c+1};
+	if ( arr[b(i)+1][a(j)-1] == 1) { c = c+1};                  
+    if ( arr[b(i)+1][j] == 1) { c = c+1};
+	if ( arr[b(i)+1][b(j)+1] == 1) { c = c+1};  
+	if ( arr[a(i)-1][a(j)-1] == 1) { c = c+1};                  
+    if ( arr[a(i)-1][j] == 1) { c = c+1};
+	if ( arr[a(i)-1][b(j)+1] == 1) { c = c+1}; 
+
+	
+	if (c < 2) {mas[i][j]=0};
+	if (c == 2) {mas[i][j]=arr[i][j]};
+	if (c ==3) {mas[i][j]=1};
+	if (c > 3) {mas[i][j]=0};
+	
+	c=0;
+	
+	};
+};
+
+for ( let i = 0; i < x; i++){
+for ( let j = 0; j < y; j++){
+if (arr[i][j] == mas[i][j]) {
+ret++;
+};
+
+
+
+};
+};
+
+
+
+
+
+
+arr = mas;
+if (ret == x*y) {
+x = parseInt(x1.value) ;
+				y = parseInt(y1.value) ;
+				let xn = 500/x;
+				let yn = 500/y;
+ctx.clearRect(0 , 0 , 500 , 500 );
+alert ('Игра окончена');
+clearInterval(t);
+	for ( i = 0; i < x; i++) {
+	for ( j = 0; j < y; j++) {
+	arr [i][j]=0;
+	};
+	};
+for (let i =0; i<= 500; i = i + xn){
+		ctx.moveTo(i, 0);
+		ctx.lineTo(i, 500);
+		}
+				for (let i =0; i<= 500; i = i + yn){
+		ctx.moveTo(0, i);
+		ctx.lineTo(500, i);
+		} 
+		ctx.stroke(); 
+};
+if (ret == x*y) return;
+if (drop == 1) {drop =0; return};
+
+
+
+
+
+
+
+
+for ( i = 0; i < x2; i++) {
+
+	for ( j = 0; j < y2; j++) {
+	let x2 = parseInt(x1.value) ;
+    let y2 = parseInt(y1.value) ;
+	let n1 = 500/x2;
+	let n2 = 500/y2;
+	let d1 = (i)*n1;
+	let d2 = (j)*n2;
+	
+	if (arr[i][j] == 1){
+	ctx.fillRect(d1 , d2 , n1 , n2 );
+    
+	}
+	if (arr[i][j] !== 1){
+	ctx.clearRect(d1 , d2 , n1 , n2 );
+    
+	}
+	
+	};
+};
+
+
+
+
+let x3 = parseInt(x1.value) ;
+    let y3 = parseInt(y1.value) ;
+	let n1 = 500/x3;
+	let n2 = 500/y3;
+for (let i =0; i<= 500; i = i + n1){
+		ctx.moveTo(i, 0);
+		ctx.lineTo(i, 500);
+		}
+				for (let i =0; i<= 500; i = i + n2){
+		ctx.moveTo(0, i);
+		ctx.lineTo(500, i);
+		} 
+		ctx.stroke(); 
+
+
+
+
+
+
+
+document.getElementById('but3').onclick = function(e){
+pause=1;
+clearInterval(t);
+};
+};
+};
+
+function a(i) { 
+let x2 = parseInt(x1.value) ; 
+if (i==0) return x2;
+else return i;
+};
+function b(i) { 
+let x2 = parseInt(x1.value) ; 
+if (i==x2-1) return -1;
+else return i;
+};
+
+document.getElementById('but1').onclick = function(e){
+  t = setInterval(game, 400);
+ pause=0;
+ };
+ document.getElementById('but2').onclick = function(e){
+ pause=0;
+ };
+ document.getElementById('but4').onclick = function(e){
+ drop = 1;
+ clearInterval(t);
+ canvas.style.border = "3px" ;    
+				canvas.style.border = "solid black" ; 
+				canvas.width = 500;
+				canvas.height = 500;
+				x = parseInt(x1.value) ;
+				y = parseInt(y1.value) ;
+				let xn = 500/x;
+				let yn = 500/y;
+				for (let i =0; i<= 500; i = i + xn){
+		ctx.moveTo(i, 0);
+		ctx.lineTo(i, 500);
+		}
+				for (let i =0; i<= 500; i = i + yn){
+		ctx.moveTo(0, i);
+		ctx.lineTo(500, i);
+		} 
+		ctx.stroke(); 
+		
+		for ( i = 0; i < x; i++) {
+	for ( j = 0; j < y; j++) {
+	arr [i][j]=0;
+	};
+}
+ };
+ document.getElementById('but5').onclick = function(e){
+ rand = +prompt ('Введите количество живых клеток');
+ let i = 0;
+while ( i < rand ) {
+x2 = parseInt(x1.value) ;
+y2 = parseInt(y1.value) ;
+let col = Math.floor(Math.random() * x2);
+let row = Math.floor(Math.random() * y2);
+let n1 = 500/x2;
+let n2 = 500/y2;
+let d1 = (col)*n1;
+let d2 = (row)*n2;
+if (arr[col][row] !== 1){
+arr[col][row]=1;
+i++;};
+if (arr[col][row]==1){
+ctx.fillRect(d1  , d2  , n1  , n2  );
+};
+
+
+
+
+
+};
+console.log(arr);
+};
+var button1 = document.getElementById('but1');
+button1.addEventListener('click',game); 
+var button2 = document.getElementById('but2');
+button2.addEventListener('click',game); 
+</script>
+</body>
+</html>
